@@ -17,7 +17,7 @@ function bind(string $key, mixed $value): void
     Container::bind($key, $value);
 }
 
-function resolve(string $key): ?string
+function resolve(string $key)
 {
     return Container::resolve($key);
 }

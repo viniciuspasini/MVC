@@ -10,7 +10,7 @@ $router = $app->container->get(Router::class);
 $router->add('GET', '/', [HomeController::class, 'index']);
 $router->add('GET', '/product', [ProductController::class, 'index']);
 $router->add('GET', '/product/([a-z\-]+)', [ProductController::class, 'show']);
-$router->add('GET', '/login', [LoginController::class, 'index']);
+$router->add('GET', '/login', [LoginController::class, 'index'])->middleware([\app\midlewares\TesteMidleWare::class, \app\midlewares\AuthMidleware::class]);
 
 //POST
 $router->add('POST', '/login', [LoginController::class, 'store']);

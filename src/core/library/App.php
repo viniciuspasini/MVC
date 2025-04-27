@@ -49,4 +49,12 @@ class App
         bind('engineTemplate', $engineTemplate);
         return $this;
     }
+
+    public function withMiddleware(array $middlewares): static
+    {
+        bind('middleware', $middlewares);
+
+        return $this;
+
+    }
 }

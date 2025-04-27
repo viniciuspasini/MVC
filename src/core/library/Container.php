@@ -11,7 +11,7 @@ class Container
         static::$container[$key] = $value;
     }
 
-    public static function resolve(string $key): ?string
+    public static function resolve(string $key)
     {
         if (!array_key_exists($key, static::$container)) {
             return null;
