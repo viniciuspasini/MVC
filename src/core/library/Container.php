@@ -17,7 +17,12 @@ class Container
             return null;
         }
 
-        return static::$container[$key];
+        if(is_callable(static::$container[$key])) {
+            return call_user_func(static::$container[$key]);
+        }else{
+            return static::$container[$key];
+        }
+
 
     }
 

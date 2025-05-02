@@ -7,16 +7,17 @@ use core\interfaces\MiddlewareInterface;
 
 class Middleware
 {
-    public function __construct(private Request $request)
+    private MiddlewareInterface $middleware;
+    public function __construct(private readonly Request $request)
     {
     }
 
-    private function  isMiddleware($middleware)
+    private function  isMiddleware($middleware): bool
     {
         return (class_exists($middleware) && is_subclass_of($middleware, MiddlewareInterface::class));
     }
 
-    public function handle(array $middleWares)
+    public function handle(array $middleWares): void
     {
         $middleware = array_shift($middleWares);
 
@@ -28,9 +29,9 @@ class Middleware
             throw new MiddlewareNotFoundException("Middleware doesn't exist: {$middleware}");
         }
 
-        $middleware = new $middleware();
+        $this->middleware = new $middleware();
 
-        $middleware->handle($this->request, function () use ($middleWares) {
+        $this->middleware->handle($this->request, function () use ($middleWares) {
             $this->handle($middleWares);
         });
     }

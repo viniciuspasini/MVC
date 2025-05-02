@@ -5,6 +5,7 @@ namespace core\library;
 use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 use Spatie\Ignition\Ignition;
+use function DI\factory;
 
 class App
 {
@@ -34,13 +35,14 @@ class App
     /**
      * @throws \Exception
      */
-    public function withContainer(): static
+    public function withDependencyInjectionContainer(): static
     {
         $builder = new ContainerBuilder();
         $builder->addDefinitions([
-            Request::class => function(){
-                return Request::create();
-            },
+            Request::class => factory([
+              Request::class,
+              'create'
+            ])
         ]);
         $this->container=$builder->build();
         return $this;
@@ -58,5 +60,16 @@ class App
 
         return $this;
 
+    }
+
+    public function withServiceContainer(array $dependencies): static
+    {
+        foreach ($dependencies as $dependency) {
+            bind($dependency, function () use ($dependency) {
+                new $dependency();
+            });
+        }
+
+        return $this;
     }
 }

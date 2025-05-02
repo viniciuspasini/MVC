@@ -9,5 +9,8 @@ $app = App::create()
         \core\middlewares\GlobalMiddleware::class,
     ])
     ->withErrorPage()
-    ->withContainer();
+    ->withDependencyInjectionContainer()
+    ->withServiceContainer([
+        \core\library\Redirect::class,
+    ]);
 

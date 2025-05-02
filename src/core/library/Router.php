@@ -4,6 +4,7 @@ namespace core\library;
 
 use core\controllers\NotFoundController;
 use core\exceptions\ControllerNotFoundException;
+use core\exceptions\MiddlewareNotFoundException;
 use DI\Container;
 
 class Router
@@ -35,16 +36,25 @@ class Router
         }
     }
 
-    public function execute()
+    /**
+     * @throws MiddlewareNotFoundException
+     * @throws ControllerNotFoundException
+     */
+    public function execute(): void
     {
         foreach ($this->routes as $method => $routes) {
             if($method === $this->request->server['REQUEST_METHOD']) {
-                return $this->handleUri($routes);
+                $this->handleUri($routes);
             }
         }
     }
 
-    private function handleUri(array $routes)
+    /**
+     * @throws ControllerNotFoundException
+     * @throws MiddlewareNotFoundException
+     * @throws \Exception
+     */
+    private function handleUri(array $routes): void
     {
         foreach ($routes as $uri => $route) {
 
@@ -66,18 +76,22 @@ class Router
             return;
         }
 
-        return $this->handleNotFound();
+        $this->handleNotFound();
         
     }
 
-    private function handleMiddleware()
+    /**
+     * @throws MiddlewareNotFoundException
+     */
+    private function handleMiddleware(): void
     {
         $middleWares = [
             ...(array)resolve("middleware"),
-            ...(array)$this->middleware];
+            ...(array)$this->middleware
+        ];
 
         if($middleWares){
-            return (new Middleware($this->request))->handle($middleWares);
+            new Middleware($this->request)->handle($middleWares);
         }
     }
 
@@ -97,7 +111,7 @@ class Router
     /**
      * @throws \Exception
      */
-    private function handleNotFound()
+    private function handleNotFound(): void
     {
         $notFoundController = new NotFoundController();
         $notFoundController->index();
