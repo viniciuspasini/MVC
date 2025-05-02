@@ -12,7 +12,6 @@ class GlobalMiddleware implements MiddlewareInterface
 
     public function handle(Request $request, Closure $next)
     {
-        dump("global middleware");
         return $next($request);
     }
 }

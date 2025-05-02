@@ -11,7 +11,6 @@ class TesteMidleWare implements MiddlewareInterface
 
     public function handle(Request $request, Closure $next)
     {
-        dump("TesteMidleware");
         return $next($request);
     }
 }

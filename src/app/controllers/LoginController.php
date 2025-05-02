@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\rules\Cpf;
 use core\library\Request;
 
 class LoginController
@@ -27,7 +28,16 @@ class LoginController
      */
     public function store(Request $request)
     {
-        dd($request);
+        $validate = $request->validate([
+            "email" => "required|email|max:255",
+            "password" => "required|".Cpf::class
+        ]);
+
+        if($validate->hasErrors()){
+            dd($validate->getErrors());
+        }
+
+        return $validate->data;
     }
 
     /**

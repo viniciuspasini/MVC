@@ -13,10 +13,9 @@ class Router
     protected string $action;
     protected array $params = [];
     protected Response $response;
-
     protected array|string $middleware = [];
 
-    public function __construct(private Container $container, private Request $request)
+    public function __construct(private readonly Container $container, private readonly Request $request)
     {
 
     }
@@ -31,7 +30,7 @@ class Router
 
     public function middleware(string|array $middlewares): void
     {
-        if($this->routes[REQUEST_METHOD]){
+        if(isset($this->routes[REQUEST_METHOD])){
             $this->routes[REQUEST_METHOD][array_key_last($this->routes[REQUEST_METHOD])][2] = $middlewares;
         }
     }

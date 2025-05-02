@@ -17,7 +17,7 @@ class Response
         return $this;
     }
 
-    public function send(): void
+    public function send(bool $return = false)
     {
         if(!headers_sent()){
             http_response_code($this->status);
@@ -26,6 +26,11 @@ class Response
                 header($key . ': ' . $header);
             }
         }
+
+        if($return){
+            return $this->content;
+        }
+
         echo $this->content;
     }
 }

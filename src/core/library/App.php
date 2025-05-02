@@ -38,7 +38,9 @@ class App
     {
         $builder = new ContainerBuilder();
         $builder->addDefinitions([
-            Request::class => Request::create(),
+            Request::class => function(){
+                return Request::create();
+            },
         ]);
         $this->container=$builder->build();
         return $this;
