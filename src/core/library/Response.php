@@ -17,6 +17,11 @@ class Response
         return $this;
     }
 
+    public function with()
+    {
+        dump('with');
+    }
+
     public function send(bool $return = false)
     {
         if(!headers_sent()){

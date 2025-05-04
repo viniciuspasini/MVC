@@ -10,6 +10,7 @@ use function DI\factory;
 class App
 {
     public \DI\Container $container;
+    public readonly Session $session;
     public static function create():self
     {
         return new self();
@@ -19,6 +20,13 @@ class App
     {
         $dotenv = Dotenv::createImmutable(dirname(__FILE__, 3));
         $dotenv->load();
+        return $this;
+    }
+
+    public function withSession(): static
+    {
+        $this->session = new Session();
+        $this->session->previousUrl();
         return $this;
     }
 
@@ -42,7 +50,15 @@ class App
             Request::class => factory([
               Request::class,
               'create'
-            ])
+            ])->parameter('session', $this->session),
+
+            Session::class => function () {
+                return $this->session;
+            },
+
+            Redirect::class => function () {
+                return new Redirect($this->session);
+            }
         ]);
         $this->container=$builder->build();
         return $this;
@@ -62,13 +78,19 @@ class App
 
     }
 
-    public function withServiceContainer(array $dependencies): static
+    public function withServiceContainer(): static
     {
-        foreach ($dependencies as $dependency) {
-            bind($dependency, function () use ($dependency) {
-                new $dependency();
-            });
-        }
+        bind(Redirect::class, function () {
+            return new Redirect();
+        });
+
+        bind(Session::class, function () {
+            return $this->session;
+        });
+
+        bind(Redirect::class, function () {
+            return new Redirect($this->session);
+        });
 
         return $this;
     }

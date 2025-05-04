@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\rules\Cpf;
+use core\library\Redirect;
 use core\library\Request;
 
 class LoginController
@@ -10,7 +11,7 @@ class LoginController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         return view('login', ['title' => 'Login']);
     }
@@ -34,7 +35,7 @@ class LoginController
         ]);
 
         if($validate->hasErrors()){
-            dd($validate->getErrors());
+            return back();
         }
 
         return $validate->data;

@@ -26,3 +26,19 @@ function response(string $content = '', int $statusCode = 200, array $headers = 
 {
     return new Response($content, $statusCode, $headers);
 }
+
+function session(): \core\library\Session
+{
+    return Container::resolve(\core\library\Session::class);
+}
+
+function redirect(string $to = ""): Response
+{
+    return resolve(\core\library\Redirect::class)->to($to);
+}
+
+function back(): Response
+{
+    return resolve(\core\library\Redirect::class)->back();
+
+}

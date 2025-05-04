@@ -8,16 +8,16 @@ class Request
         public readonly array $server,
         public readonly array $get,
         public readonly array $post,
-        public readonly array $session,
+        public readonly Session $session,
         public readonly array $cookies,
         public readonly array $headers,
     )
     {
     }
 
-    public static function create(): static
+    public static function create(Session $session): static
     {
-        return new static($_SERVER, $_GET, $_POST, $_SESSION, $_COOKIE, getallheaders());
+        return new static($_SERVER, $_GET, $_POST, $session, $_COOKIE, getallheaders());
     }
 
     public function validate(array $rules): Validate
