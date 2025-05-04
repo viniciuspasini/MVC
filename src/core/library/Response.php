@@ -17,9 +17,14 @@ class Response
         return $this;
     }
 
-    public function with()
+    public function with(array $data, ?Session $session = null): static
     {
-        dump('with');
+        if ($session) {
+            $session->flash()->set($data);
+            return $this;
+        }
+        session()->flash()->set($data);
+        return $this;
     }
 
     public function send(bool $return = false)

@@ -4,6 +4,12 @@
 
 <form action="/login" method="post">
     <input type="text" placeholder="email" name="email">
+    <?= flash('email') ?>
+    <br><br>
+
     <input type="text" placeholder="password" name="password">
-    <button type="submit">login</button>
+    <?= flash('password') ?>
+    <br><br>
+
+     <button type="submit">login</button>
 </form>

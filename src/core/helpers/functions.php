@@ -1,6 +1,7 @@
 <?php
 
 use core\library\Container;
+use core\library\Flash;
 use core\library\Response;
 use core\library\Template;
 
@@ -41,4 +42,9 @@ function back(): Response
 {
     return resolve(\core\library\Redirect::class)->back();
 
+}
+
+function flash(string $key, string $style = 'alert alert-danger'): ?string
+{
+    return session()->flash()->get($key, $style);
 }

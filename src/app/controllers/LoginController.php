@@ -35,7 +35,7 @@ class LoginController
         ]);
 
         if($validate->hasErrors()){
-            return back();
+            return back()->with($validate->getErrors());
         }
 
         return $validate->data;

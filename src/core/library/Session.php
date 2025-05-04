@@ -69,4 +69,9 @@ class Session
         $this->set('url.last', $this->get('url.current'));
         $this->set('url.current', REQUEST_URI);
     }
+
+    public function flash(): Flash
+    {
+        return new Flash($this);
+    }
 }
