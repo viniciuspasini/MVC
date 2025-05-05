@@ -23,8 +23,11 @@ class Router
 
     public function add(string $method, string $uri, array $route): static
     {
-        $route[2] = [];
-        $this->routes[$method][$uri] = $route;
+        $this->routes[$method][$uri] = [
+            'controller' => $route[0],
+            'action' => $route[1],
+            'middleware' => []
+        ];
 
         return $this;
     }
@@ -32,7 +35,7 @@ class Router
     public function middleware(string|array $middlewares): void
     {
         if(isset($this->routes[REQUEST_METHOD])){
-            $this->routes[REQUEST_METHOD][array_key_last($this->routes[REQUEST_METHOD])][2] = $middlewares;
+            $this->routes[REQUEST_METHOD][array_key_last($this->routes[REQUEST_METHOD])]['middleware'] = $middlewares;
         }
     }
 
@@ -59,18 +62,27 @@ class Router
         foreach ($routes as $uri => $route) {
 
             if ($uri === $this->request->server['REQUEST_URI']) {
-                [$this->controller, $this->action, $this->middleware] = $route;
+                [
+                    'controller' => $this->controller,
+                    'action' => $this->action,
+                    'middleware' => $this->middleware
+                ] = $route;
                 break;
             }
 
             $pattern = str_replace('/', '\/', trim($uri, '/'));
             if ($uri !== '/' && preg_match("/^$pattern$/", trim(REQUEST_URI, '/'), $this->params)) {
-                [$this->controller, $this->action, $this->middleware] = $route;
+                [
+                    'controller' => $this->controller,
+                    'action' => $this->action,
+                    'middleware' => $this->middleware
+                ] = $route;
                 unset($this->params[0]);
                 break;
             }
         }
-        if ($this->controller){
+
+        if (isset($this->controller)){
             $this->handleMiddleware();
             $this->handleController();
             return;
@@ -113,8 +125,7 @@ class Router
      */
     private function handleNotFound(): void
     {
-        $notFoundController = new NotFoundController();
-        $notFoundController->index();
+        $this->handleResponse( new NotFoundController()->index())->send();
     }
 
     private function handleResponse(Response|array|string $response): Response

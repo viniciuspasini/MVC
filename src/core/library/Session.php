@@ -28,10 +28,9 @@ class Session
     {
         if(str_contains($key, '.')){
             [$key1, $key2] = explode('.', $key);
-            return $_SESSION[$key1][$key2];
+            return $_SESSION[$key1][$key2] ?? '';
         }
-        return $_SESSION[$key];
-
+        return $_SESSION[$key] ?? '';
     }
 
     public function all()

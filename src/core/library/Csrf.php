@@ -12,14 +12,31 @@ class Csrf
 
     public function get(): string
     {
-        $this->session->set('csrf', bin2hex(random_bytes(32)));
-
+        if(!$this->session->has('csrf')) {
+            $this->session->set('csrf', bin2hex(random_bytes(32)));
+        }
         return '<input type="hidden" name="csrf" value="'.$this->session->get('csrf').'">';
+    }
+
+    private function regexIgnoreRoutes(): bool
+    {
+        $excepts = configFile('csrf.ignore');
+        if(!empty($excepts)){
+            foreach ($excepts as $except) {
+                $pattern = str_replace('/', '\/', trim($except, '/'));
+                if (preg_match("/^$pattern$/", trim(REQUEST_URI, '/'))){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public function check(Request $request): void
     {
-        if(REQUEST_METHOD !== 'GET' && !in_array(REQUEST_URI, configFile('csrf.ignore'))){
+
+
+        if(REQUEST_METHOD !== 'GET' && !$this->regexIgnoreRoutes()){
 
             if (!$request->get('csrf')){
                 view(
@@ -44,6 +61,8 @@ class Csrf
                 )->send();
                 die;
             }
+
+            $this->session->remove('csrf');
         }
     }
 

@@ -2,13 +2,16 @@
 
 namespace core\controllers;
 
+
+use core\library\Response;
+
 class NotFoundController
 {
     /**
      * @throws \Exception
      */
-    public function index(): void
+    public function index(): Response
     {
-        view('error404', ['title' => 'error - 404'], VIEW_PATH_CORE);
+        return view('error404', ['title' => 'error - 404'], VIEW_PATH_CORE);
     }
 }
