@@ -3,6 +3,9 @@
 <h1>Login</h1>
 
 <form action="/login" method="post">
+
+    <?= csfr() ?>
+
     <input type="text" placeholder="email" name="email">
     <?= flash('email') ?>
     <br><br>

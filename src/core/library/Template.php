@@ -14,7 +14,7 @@ class Template
     /**
      * @throws \Exception
      */
-    public static function render(string $view, array $data, $viewPath): Response
+    public static function render(string $view, array $data, string $viewPath, int $status): Response
     {
         $templateEngine = resolve('engineTemplate');
 
@@ -28,6 +28,6 @@ class Template
             throw new ClassNotFoundException('Template engine "'.$templateEngine.'" must be an instance of TemplateEngineInterface');
         }
 
-        return  response(content: self::$templateEngine->render($view, $data, $viewPath), headers: ['Content-Type' => 'text/html']);
+        return  response(content: self::$templateEngine->render($view, $data, $viewPath), statusCode: $status, headers: ['Content-Type' => 'text/html']);
     }
 }

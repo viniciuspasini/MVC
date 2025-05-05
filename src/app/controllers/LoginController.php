@@ -29,6 +29,7 @@ class LoginController
      */
     public function store(Request $request)
     {
+
         $validate = $request->validate([
             "email" => "required|email|max:255",
             "password" => "required|".Cpf::class

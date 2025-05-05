@@ -74,4 +74,9 @@ class Session
     {
         return new Flash($this);
     }
+
+    public function csrf(): Csrf
+    {
+        return new Csrf($this);
+    }
 }

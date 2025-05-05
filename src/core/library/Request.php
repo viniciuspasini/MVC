@@ -13,6 +13,7 @@ class Request
         public readonly array $headers,
     )
     {
+        $this->session->csrf()->check($this);
     }
 
     public static function create(Session $session): static
@@ -22,14 +23,14 @@ class Request
 
     public function validate(array $rules): Validate
     {
-        return (new Validate())->validate($rules, $this);
+        return new Validate()->validate($rules, $this);
     }
 
     public function get(string $name): ?string
     {
         $httpMethod = strtolower($this->server['REQUEST_METHOD']);
 
-        if($httpMethod){
+        if($httpMethod && isset($this->$httpMethod[$name])){
             return strip_tags($this->$httpMethod[$name]);
         }
 
