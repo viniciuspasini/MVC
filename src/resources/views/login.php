@@ -2,9 +2,10 @@
     
 <h1>Login</h1>
 
-<form action="/login" method="post">
+<form action="/user/2" method="post">
 
-
+    <?= csfr() ?>
+    <?= method('DELETE') ?>
 
     <input type="text" placeholder="email" name="email">
     <?= flash('email') ?>

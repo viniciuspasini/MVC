@@ -42,7 +42,12 @@ class Request
         $httpMethod = strtolower($this->server['REQUEST_METHOD']);
 
         return array_map(function ($value) {
-            return strip_tags($value);
+                return strip_tags($value);
         }, $this->$httpMethod);
+    }
+
+    public function isAjax(): bool
+    {
+        return isset($this->headers['X_REQUESTED_WITH']) && $this->headers['X_REQUESTED_WITH'] === 'XMLHttpRequest';
     }
 }

@@ -71,3 +71,8 @@ function configFile(string $key): array
 
     return $config[$key] ?? [];
 }
+
+function method(string $method): string
+{
+    return '<input type="hidden" name="_method" value="'.$method.'">';
+}

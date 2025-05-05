@@ -13,10 +13,9 @@ class Router
     protected string $controller;
     protected string $action;
     protected array $params = [];
-    protected Response $response;
     protected array|string $middleware = [];
 
-    public function __construct(private readonly Container $container, private readonly Request $request)
+    public function __construct(private readonly Container $container, private readonly Request $request, protected Response $response)
     {
 
     }
@@ -45,11 +44,18 @@ class Router
      */
     public function execute(): void
     {
+        $httpMethod = $this->request->server['REQUEST_METHOD'];
+
+        if($this->request->get('_method')){
+            $httpMethod = strtoupper($this->request->get('_method'));
+        }
+
         foreach ($this->routes as $method => $routes) {
-            if($method === $this->request->server['REQUEST_METHOD']) {
+            if($method === $httpMethod) {
                 $this->handleUri($routes);
             }
         }
+
     }
 
     /**
@@ -125,7 +131,13 @@ class Router
      */
     private function handleNotFound(): void
     {
-        $this->handleResponse( new NotFoundController()->index())->send();
+        if($this->request->isAjax()){
+            $response = ['404 not found'];
+        }else{
+            $response = new NotFoundController()->index();
+        }
+
+        $this->handleResponse($response)->send();
     }
 
     private function handleResponse(Response|array|string $response): Response

@@ -3,6 +3,7 @@
 use app\controllers\HomeController;
 use app\controllers\LoginController;
 use app\controllers\ProductController;
+use app\controllers\UserController;
 use core\library\Router;
 
 $router = $app->container->get(Router::class);
@@ -23,5 +24,12 @@ $router->add('GET', '/login', [LoginController::class, 'index'])->middleware([
 //POST
 
 $router->add('POST', '/login', [LoginController::class, 'store']);
+
+//PUT
+
+//DELETE
+
+$router->add('DELETE', '/user/([0-9\-]+)', [UserController::class, 'store']);
+
 
 $router->execute();

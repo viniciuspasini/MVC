@@ -15,7 +15,7 @@ class Csrf
         if(!$this->session->has('csrf')) {
             $this->session->set('csrf', bin2hex(random_bytes(32)));
         }
-        return '<input type="hidden" name="csrf" value="'.$this->session->get('csrf').'">';
+        return '<input type="hidden" name="_csrf" value="'.$this->session->get('csrf').'">';
     }
 
     private function regexIgnoreRoutes(): bool
@@ -32,34 +32,44 @@ class Csrf
         return false;
     }
 
+
+    private function csrfNotFound(Request $request, $view, array $data): void
+    {
+        if($request->isAjax()){
+            response(
+                statusCode: 419,
+                headers: ['Content-Type' => 'application/json']
+            )->json([$data['msg']])->send();
+        }else{
+            view(
+                $view,
+                $data,
+                VIEW_PATH_CORE
+            )->send();
+        }
+        die;
+    }
+
     public function check(Request $request): void
     {
 
 
         if(REQUEST_METHOD !== 'GET' && !$this->regexIgnoreRoutes()){
 
-            if (!$request->get('csrf')){
-                view(
+            if (!$request->get('_csrf')){
+                $this->csrfNotFound(
+                    $request,
                     'error319',
-                    [
-                        'title' => 'error - 319',
-                        'msg' => 'The CSRF token was not provided'
-                    ],
-                    VIEW_PATH_CORE
-                )->send();
-                die;
+                    ['title' => 'error - 319', 'msg' => 'The CSRF token was not provided'],
+                );
             }
 
-            if(!hash_equals($request->get('csrf'), $this->session->get('csrf'))){
-                view(
+            if(!hash_equals($request->get('_csrf'), $this->session->get('csrf'))){
+                $this->csrfNotFound(
+                    $request,
                     'error319',
-                    [
-                        'title' => 'error - 319',
-                        'msg' => 'The CSRF token not matched'
-                    ],
-                    VIEW_PATH_CORE
-                )->send();
-                die;
+                    ['title' => 'error - 319', 'msg' => 'The CSRF token not matched'],
+                );
             }
 
             $this->session->remove('csrf');
